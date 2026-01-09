@@ -1,0 +1,30 @@
+# --- Python & Environments ---
+# Ignore the virtual environment folder
+venv/
+.venv/
+env/
+ENV/
+
+# Ignore Python byte-code (compiled files)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Database & Storage ---
+# Ignore your local SQLite database (so you don't leak user data)
+*.db
+*.sqlite3
+
+# --- macOS Specific ---
+# Ignore hidden system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# --- Development Tools ---
+# Ignore environment variables (if you use a .env file later)
+.env
+.flaskenv
+
+# Ignore VS Code settings (optional, but keeps your repo clean)
+.vscode/
