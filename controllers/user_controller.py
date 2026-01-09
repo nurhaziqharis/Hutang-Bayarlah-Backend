@@ -4,6 +4,8 @@ from database import get_session
 from models import User
 from dtos.createuserrequest_dto import CreateUserRequest
 from dtos.createuserresponse_dto import CreateUserResponse
+from dtos.loginresponse_dto import LoginResponse
+from services.authservice import AuthService
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -12,6 +14,7 @@ def create_user(
     user: CreateUserRequest,
     session: Session = Depends(get_session)
 ):
+    
     # 1️⃣ Check existing user
     existing_user = session.exec(
         select(User).where(User.email == user.email)
@@ -23,11 +26,13 @@ def create_user(
         detail="User with this email already exists"
     )
 
+    hashed_password = AuthService().get_password_hash(user.password)
+
     # 2️⃣ Create user
     user_to_create = User(
         fullname=user.fullname,
         email=user.email,
-        password=user.password,
+        password=hashed_password,
         role=user.role
     )
 
@@ -48,3 +53,7 @@ def create_user(
 @router.get("/")
 def get_all_users(session: Session = Depends(get_session)):
     return session.exec(select(User)).all()
+
+@router.post("/login", response_model=Login)
+def login_user():
+    return {"message": "Login endpoint - to be implemented"}
