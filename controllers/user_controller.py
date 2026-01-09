@@ -5,9 +5,12 @@ from models import User
 from dtos.createuserrequest_dto import CreateUserRequest
 from dtos.createuserresponse_dto import CreateUserResponse
 from dtos.loginresponse_dto import LoginResponse
+from dtos.loginrequest_dto import LoginRequest
 from services.authservice import AuthService
+from services.commonservice import CommonService
 
 router = APIRouter(prefix="/users", tags=["Users"])
+auth_service = AuthService()
 
 @router.post("/create", response_model=CreateUserResponse)
 def create_user(
@@ -50,10 +53,20 @@ def create_user(
     )
 
 
-@router.get("/")
-def get_all_users(session: Session = Depends(get_session)):
-    return session.exec(select(User)).all()
+@router.post("/login", response_model=LoginResponse)
+def login_user(login_data: LoginRequest):
 
-@router.post("/login", response_model=Login)
-def login_user():
-    return {"message": "Login endpoint - to be implemented"}
+    result = auth_service.login_handler(
+        email=login_data.email,
+        password=login_data.password,
+        get_user_by_email=CommonService.get_user_by_email
+    )
+
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return result
