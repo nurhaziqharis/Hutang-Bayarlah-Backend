@@ -29,7 +29,7 @@ def create_user(
         detail="User with this email already exists"
     )
 
-    hashed_password = AuthService().get_password_hash(user.password)
+    hashed_password = auth_service.get_password_hash(user.password)
 
     # 2️⃣ Create user
     user_to_create = User(

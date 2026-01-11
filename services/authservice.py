@@ -1,3 +1,4 @@
+from fastapi.security import OAuth2PasswordBearer
 import jwt
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
@@ -9,6 +10,7 @@ import bcrypt
 class AuthService:
     # Configuration
     load_dotenv()
+    oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/login")
     SECRET_KEY = os.getenv("SECRET_KEY")
     ALGORITHM = os.getenv("ALGORITHM")
     # Default to 30 minutes if not in .env
