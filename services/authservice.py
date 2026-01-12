@@ -1,4 +1,5 @@
 from fastapi.security import OAuth2PasswordBearer
+from fastapi import APIRouter, Depends, HTTPException, status
 import jwt
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
@@ -91,3 +92,22 @@ class AuthService:
                 "name": getattr(user, 'name', None)
             }
         }
+    
+    def check_user_authorization(self, jwttoken: str, userid: str) -> bool:
+        payload = self.decode_access_token(jwttoken)
+    
+        if not payload:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+    
+        authenticated_user_id = payload.get("sub")
+        if str(authenticated_user_id) != str(userid):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only access your own bills"
+            )
+    
+        return True

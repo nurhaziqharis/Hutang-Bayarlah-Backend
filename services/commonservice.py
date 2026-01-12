@@ -7,7 +7,7 @@ class CommonService:
     
     @staticmethod
     def get_user_by_email(email: str):
-        # Wrap the generator so it works with the 'with' statement
+        
         get_session_ctx = contextlib.contextmanager(get_session)
         
         with get_session_ctx() as session:

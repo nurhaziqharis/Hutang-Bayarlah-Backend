@@ -55,6 +55,7 @@ def create_user(
 
 @router.post("/login", response_model=LoginResponse)
 def login_user(login_data: LoginRequest):
+    print("Someone is logged")
 
     result = auth_service.login_handler(
         email=login_data.email,
